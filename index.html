@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fidelflow Guides</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #0f1117; color: #e5e7eb; margin: 0; padding: 24px; }
+    .container { max-width: 920px; margin: 0 auto; }
+    h1 { color: #f97316; margin: 0 0 6px; font-size: 1.8rem; }
+    .subtitle { color: #9ca3af; margin: 0 0 20px; }
+    .characters { display: flex; gap: 24px; justify-content: center; margin: 32px 0; flex-wrap: wrap; }
+    .char-card { border: 1px solid #374151; border-radius: 16px; padding: 16px; text-align: center; cursor: pointer; background: #1a1d27; width: 240px; transition: 0.2s; }
+    .char-card:hover { border-color: #f97316; transform: translateY(-2px); }
+    .char-card img { width: 200px; height: 260px; object-fit: cover; border-radius: 12px; }
+    .char-name { margin-top: 12px; font-weight: 600; color: #f97316; }
+    #chat { border: 1px solid #374151; border-radius: 12px; height: 420px; overflow-y: auto; padding: 20px; background: #1a1d27; margin: 16px 0; }
+    .msg { margin: 14px 0; padding: 14px 16px; border-radius: 10px; }
+    .user { background: #1e3a8a; text-align: right; margin-left: 48px; }
+    .bot { background: #111827; margin-right: 48px; border: 1px solid #374151; }
+    .input-row { display: flex; gap: 10px; }
+    input { flex: 1; padding: 14px; border-radius: 10px; border: 1px solid #374151; background: #111827; color: #e5e7eb; }
+    button { padding: 12px 20px; background: #f97316; color: #000; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    .secondary { background: #374151; color: #e5e7eb; }
+    #selectScreen { display: block; }
+    #mainScreen { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="selectScreen">
+      <h1>Choose Your Guide</h1>
+      <p class="subtitle">Select a character. You can rename them later.</p>
+      <div class="characters">
+        <div class="char-card" onclick="selectChar('male', 'Awe')">
+          <img src="male.jpg" alt="Male Guide">
+          <div class="char-name">Recommended: Awe</div>
+        </div>
+        <div class="char-card" onclick="selectChar('female', 'Awa')">
+          <img src="female.jpg" alt="Female Guide">
+          <div class="char-name">Recommended: Awa</div>
+        </div>
+      </div>
+    </div>
+    <div id="mainScreen">
+      <h1 id="guideTitle">Awe</h1>
+      <button class="secondary" onclick="renameGuide()">Rename</button>
+      <button class="secondary" onclick="newChat()">New Chat</button>
+      <button class="secondary" onclick="backToSelect()">Change Character</button>
+      <div id="chat"><div class="msg bot" id="welcomeMsg">Hello. I am your guide.</div></div>
+      <div class="input-row">
+        <input id="input" placeholder="Ask your guide...">
+        <button onclick="send()">Ask</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const state = { guideName: "Awe" };
+    function selectChar(type, name) {
+      state.guideName = name;
+      document.getElementById("selectScreen").style.display = "none";
+      document.getElementById("mainScreen").style.display = "block";
+      document.getElementById("guideTitle").textContent = name;
+      document.getElementById("welcomeMsg").textContent = "Hello. I am " + name + ".";
+    }
+    function renameGuide() {
+      const n = prompt("Rename your guide:", state.guideName);
+      if (n) { state.guideName = n; document.getElementById("guideTitle").textContent = n; }
+    }
+    function backToSelect() {
+      document.getElementById("mainScreen").style.display = "none";
+      document.getElementById("selectScreen").style.display = "block";
+    }
+    function newChat() { document.getElementById("chat").innerHTML = "<div class=\"msg bot\">Hello. I am " + state.guideName + ".</div>"; }
+    function send() {
+      const t = document.getElementById("input").value.trim();
+      if (!t) return;
+      const chat = document.getElementById("chat");
+      chat.innerHTML += "<div class=\"msg user\">" + t + "</div>";
+      chat.innerHTML += "<div class=\"msg bot\">I am " + state.guideName + ". Tell me the specific task and I will guide you on the Fidelflow roadmap.</div>";
+      document.getElementById("input").value = "";
+      chat.scrollTop = 9999;
+    }
+    document.getElementById("input").addEventListener("keypress", e => { if (e.key === "Enter") send(); });
+  </script>
+</body>
+</html>
